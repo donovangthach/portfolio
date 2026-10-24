@@ -1,0 +1,31 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables (secrets). Keep a template file committed.
+.env
+.env.*
+!.env.example
+
+# hosting CLI folders
+.vercel/
+.wrangler/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# editor settings: ignore everything except the shared extension list
+.idea/
+.vscode/*
+!.vscode/extensions.json
