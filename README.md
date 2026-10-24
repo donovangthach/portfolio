@@ -11,3 +11,9 @@ npm install      # install dependencies
 npm run dev      # dev server at http://localhost:4321
 npm run build    # production build into ./dist
 npm run preview  # serve ./dist locally
+```
+
+## Credits
+Icons from [Bootstrap Icons](https://icons.getbootstrap.com) (MIT License).
+  - [GItHub Icon](https://icons.getbootstrap.com/icons/github/)
+  - [LinkedIn Icon](https://icons.getbootstrap.com/icons/linkedin/)

@@ -1,0 +1,60 @@
+---
+import GitHubIcon from "../icons/github.svg";
+import LinkedInIcon from "../icons/linkedin.svg";
+
+const links = [
+  { href: "/#projects", label: "Projects" },
+  { href: "/#about", label: "About" },
+  { href: "/resume.pdf", label: "Resume", external: true },
+];
+
+const socials = [
+  { href: "https://github.com/donovangthach", label: "GitHub", Icon: GitHubIcon, external: true},
+  { href: "https://linkedin.com/in/thachdon", label: "LinkedIn", Icon: LinkedInIcon, external: true },
+]
+---
+
+<header class="border-b border-space-800">
+  <nav class="mx-auto flex max-w-3xl flex-col gap-2 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+    <a href="/" class="font-semibold tracking-tight hover:text-comet">Donovan Thach</a>
+    <ul class="flex gap-4 sm:gap-6 text-sm flex-wrap">
+      {
+        links.map((link) => (
+          <li>
+            <a 
+              href={link.href} 
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noopener noreferrer" : undefined}
+              class="text-starlight/70 transition-colors hover:text-comet focus-visible:outline-2 focus-visible:outline-comet"
+            >
+              {link.label}
+              {
+                link.external && (
+                  <>
+                    <span aria-hidden="true" class="ml-0.5">&nearr;&#xFE0E;</span>
+                    <span class="sr-only">(opens in a new tab)</span>
+                  </>
+                )
+              }
+            </a>
+          </li>
+        ))
+      }
+      {
+        socials.map(({ href, label, Icon}) => (
+          <li>
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block text-starlight/70 transition-colors hover:text-comet focus-visible:outline-2 focus-visible:outline-comet"
+            >
+              <Icon class="size-5" aria-hidden="true" />
+              <span class="sr-only">{label} (opens in a new tab)</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>

@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+@theme {
+  --color-space-950: #05060f;
+  --color-space-900: #0b0d1f;
+  --color-space-800: #1a1f3d;
+  --color-starlight: #e6e9ff;
+  --color-nebula: #8b5cf6;
+  --color-comet: #38bdf8;
+}
