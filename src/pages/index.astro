@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
+import { Content as About } from "../content/about.md";
 import { getProjects } from "../lib/projects";
 
 const projects = await getProjects();
@@ -36,6 +37,8 @@ const secondary = projects.filter((project) => project.data.tier === "secondary"
 
   <section id="about" class="mt-20 scroll-mt-20">
     <h2 class="text-2xl font-semibold">About</h2>
-    <p class="mt-4 text-starlight/80">Temporary About.</p>
+    <div class="prose prose-invert mt-4 max-w-none">
+      <About />
+    </div>
   </section>
 </BaseLayout>
