@@ -15,5 +15,6 @@ npm run preview  # serve ./dist locally
 
 ## Credits
 Icons from [Bootstrap Icons](https://icons.getbootstrap.com) (MIT License).
-  - [GItHub Icon](https://icons.getbootstrap.com/icons/github/)
+  - [GitHub Icon](https://icons.getbootstrap.com/icons/github/)
   - [LinkedIn Icon](https://icons.getbootstrap.com/icons/linkedin/)
+  
