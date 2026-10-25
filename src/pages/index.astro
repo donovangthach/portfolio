@@ -1,5 +1,11 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { getProjects } from "../lib/projects";
+
+const projects = await getProjects();
+const featured = projects.filter((project) => project.data.tier === "featured");
+const secondary = projects.filter((project) => project.data.tier === "secondary");
 ---
 
 <BaseLayout title="Donovan Thach | Portfolio">
@@ -8,5 +14,28 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <p class="mt-4 text-lg text-starlight/80">
       I build AI for healthcare and assistive tech, backed by systems programming.
     </p>
+  </section>
+
+  <section id="projects" class="mt-20 scroll-mt-20">
+    <h2 class="text-2xl font-semibold">Featured Projects</h2>
+    <div class="mt-6 grid gap-6">
+      {featured.map((project) => <ProjectCard project={project} />)}
+    </div>
+
+    {
+      secondary.length > 0 && (
+        <>
+          <h2 class="mt-16 text-2xl font-semibold">More Projects</h2>
+          <div class="mt-6 grid gap-6 sm:grid-cols-2">
+            {secondary.map((project) => <ProjectCard project={project} />)}
+          </div>
+        </>
+      )
+    }
+  </section>
+
+  <section id="about" class="mt-20 scroll-mt-20">
+    <h2 class="text-2xl font-semibold">About</h2>
+    <p class="mt-4 text-starlight/80">Temporary About.</p>
   </section>
 </BaseLayout>
