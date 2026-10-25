@@ -1,0 +1,87 @@
+---
+function makeStars(count: number, spread: number) {
+  const stars: string[] = [];
+  for (let i = 0; i < count; i++) {
+    const x = Math.floor(Math.random() * spread);
+    const y = Math.floor(Math.random() * spread);
+    stars.push(`${x}px ${y}px #fff`);
+  }
+
+  return stars.join(", ");
+}
+
+const SPREAD = 2560;
+const small = makeStars(400, SPREAD);
+const medium = makeStars(120, SPREAD);
+const large = makeStars(40, SPREAD);
+---
+
+<div class="starfield" aria-hidden="true">
+  <div class="layer small" style={`box-shadow: ${small}`}></div>
+  <div class="layer medium" style={`box-shadow: ${medium}`}></div>
+  <div class="layer large" style={`box-shadow: ${large}`}></div>
+</div>
+
+<style>
+  .starfield {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 9999px;
+    animation: drift linear infinite;
+  }
+
+  .layer::after {
+    content: "";
+    position: absolute;
+    top: 2560px;
+    left: 0;
+    width: inherit;
+    height: inherit;
+    border-radius: inherit;
+    box-shadow: inherit;
+  }
+
+  .small {
+    width: 1px;
+    height: 1px;
+    opacity: 0.5;
+    animation-duration: 200s;
+  }
+
+  .medium {
+    width: 2px;
+    height: 2px;
+    opacity: 0.6;
+    animation-duration: 140s;
+  }
+
+  .large {
+    width: 3px;
+    height: 3px;
+    opacity: 0.7;
+    animation-duration: 90s;
+  }
+
+  @keyframes drift {
+    from {
+      transform: translateY(0);
+    } to {
+      transform: translateY(-2560px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .layer {
+      animation: none;
+    }
+  }
+</style>
