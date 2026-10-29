@@ -13,6 +13,8 @@ repo: https://github.com/donovangthach/NavigAid
 
 A white cane only tells you about what it touches, usually at ground level and about a step ahead. A lot of smart cane attachments add beeps or vibrations to warn about obstacles, but you still have to figure out what every one of those signals means while you're walking, and we thought all those alerts could burn a person out fast. With NavigAid, the cane steers itself away from obstacles, and you just follow it.
 
+![AI SmartCane being held by Daniel Martin, teammate for BeaverHacks 2026.](./smartcane/cane-held.webp)
+
 ## My role
 
 We built NavigAid as a team of three in 24 hours at BeaverHacks 2026. I owned the hardware: I wrote all of the Arduino firmware in C++, wired the sensors and motors, and built the steering. My teammates built the computer vision and the decision logic on the Raspberry Pi, and I worked with them on how the Pi turns sensor readings into steering commands.
@@ -44,6 +46,8 @@ We won 2nd place in the BeaverHacks 2026 hardware track, even though the live de
   allowfullscreen
   style="width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 0.75rem;"
 ></iframe>
+
+![AI SmartCane lying on the ground.](./smartcane/cane-pic.jpg)
 
 ## What I'd do differently
 
