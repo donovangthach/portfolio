@@ -7,10 +7,6 @@ tags: [React, TypeScript, Express, MongoDB]
 status: Course project
 ---
 
-## Overview
+Lift Log is a workout tracker where you log your sets and reps, look back through your history, and track personal records. We built it as a team of seven for our software engineering course, working in one- to two-week sprints, and it got the top score in the class.
 
-Lift Log lets lifters log their sets and reps, look back through their workout history, and track personal records. It was built for our software engineering course with React, TypeScript, Express, and MongoDB.
-
-## My Role
-
-I built the login and authentication. Passwords are hashed with bcrypt before they're stored, so the database never holds a real password. Logging in returns a JWT that expires after a set time, so a stolen token stops working on its own.
+I built the login and authentication. Passwords get hashed with bcrypt before they're stored, so the database never holds a real password. Logging in sets a JWT in a cookie that expires after a set time, so a stolen token stops working on its own. Route-guard middleware keeps logged-out users away from private pages, and an account locks after 5 failed login attempts. I also wrote the team's user acceptance tests.
