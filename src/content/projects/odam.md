@@ -13,6 +13,9 @@ repo: https://github.com/donovangthach/Oral-Disease-Analysis-Model
 
 ODAM detects six oral diseases in photos of the mouth: caries (cavities), gingivitis, tooth discoloration, ulcers, calculus (tartar), and hypodontia (missing teeth). I want low-income families who can't easily get to a dentist to get an early warning from a phone photo, so they can start taking better care of their teeth sooner. It's a screening aid. It doesn't replace a dentist.
 
+![Four mouth photos with the model's boxes drawn on them: an ulcer inside the lip, tartar on several front teeth, a gap where a lower tooth is missing, and decay on a back tooth.](./odam/predictions-grid.jpg)
+*Predictions from my clean baseline on test photos. Top left: ulcer (0.81). Top right: calculus (0.57 to 0.81) and tooth discoloration (0.34). Bottom left: hypodontia (0.33). Bottom right: caries (0.56). The numbers are how confident the model is in each box.*
+
 ## My role
 
 I built a four-stage data pipeline that combines eight separately labeled datasets into one training set. Each stage is its own script, run in order:
@@ -32,9 +35,9 @@ I picked the diseases that are most common and easiest to see, so the model isn'
 
 The first version of ODAM used Faster R-CNN with a ResNet-50 backbone, which I built and trained in PyTorch. For version 2, I rebuilt it around YOLO11, because it has data augmentation built in, exports to a single ONNX file for deployment, and runs about 10 times faster per image. Most of my datasets came from Roboflow, which already exports labels in YOLO format, so YOLO11 reads them with no conversion.
 
-I train it with the Ultralytics Python package, which handles the training loop and evaluation. My main setup is the medium model (YOLO11m), trained for 300 epochs with a batch size of 32 and the AdamW optimizer.
+I train it with the Ultralytics Python package, which handles the training loop and evaluation. My main setup is the medium model (YOLO11m), trained for up to 300 epochs with a batch size of 32 and the AdamW optimizer. Training stops early if the validation score hasn't improved in 50 epochs.
 
-Training runs on Oregon State's High Performance Computing (HPC) cluster through SLURM job scripts. A full run takes around 7 hours.
+Training runs on Oregon State's High Performance Computing (HPC) cluster through SLURM job scripts. A full 300-epoch run takes around 7 hours. My clean baseline stopped early at epoch 136 and took 2.6 hours.
 
 ## Result
 
@@ -42,18 +45,20 @@ My first full run with YOLO11m scored 0.814 mAP50 on the validation set. That se
 
 I rewrote the split to keep every copy of a photo in the same set, added a leak check to the verify stage, and wrote an HPC job that scores every model the same way on the test set. Validation dropped from 0.814 to 0.665 mAP50, and the test set scored 0.674. Then I saved the split to a manifest that locks the test set, so every later experiment is compared on exactly the same photos.
 
-From there I found that calculus is the weak class. Only about 233 unique training photos have calculus in them, and a lot of teeth with visible tartar have no label at all, including in the test set. Calculus scores 0.395 AP50, while the other five classes score between 0.53 and 0.86.
+At that point, calculus looked like the weak class. It scored 0.395 AP50, while the other five classes scored between 0.53 and 0.86. Only about 233 unique training photos have calculus in them, and a lot of teeth with visible tartar have no label at all, including in the test set. So when the model finds tartar nobody labeled, it gets marked wrong, and the calculus score isn't reliable.
 
-To tell real improvements apart from noise, I retrained with only the random seed changed. Single classes moved by up to 0.04 AP50, but the average of the five non-calculus classes only moved by 0.003, so that average is what I compare experiments on now.
+To tell real improvements apart from noise, I retrained with only the random seed changed. Single classes moved by up to 0.04 AP50, but the average of the five non-calculus classes only moved by 0.003, so that average is what I compare experiments on. I ran this check before I found the duplicates below, so I still need to redo it on the clean data.
 
-Most recently, I wrote a duplicate finder that compares images by what's in them instead of their file names. It found that 319 of the 928 test photos (34%) have a near-identical copy in the training set under a different dataset or file name, because several of the Roboflow datasets share photos. So my current numbers are still inflated. I removed the 788 duplicate photos from the training set, and I'm retraining a clean baseline that will replace these results.
+Then I wrote a duplicate finder that compares images by what's in them instead of their file names. It found that 319 of the 928 test photos (34%) had a near-identical copy in the training set under a different dataset or file name, because several of the Roboflow datasets share photos. I removed the 788 duplicate photos from the training set and retrained a clean baseline.
+
+The test score dropped from 0.666 to 0.430 mAP50. Gingivitis fell the most, from 0.748 to 0.124 AP50, and caries, ulcer, and tooth discoloration each dropped by 0.2 to 0.3. Those classes come mostly from the datasets that shared photos. Hypodontia and calculus come mostly from other datasets, and they barely moved. So most of the old scores came from the model recognizing photos it had already seen, not from finding disease in new ones. These are my first honest numbers, and the model isn't good enough to use yet. My duplicate finder is strict on purpose, so a few near-copies could still be in the training set, and these numbers might still be a little high.
 
 | Run | Validation mAP50 | Test mAP50 | What was wrong |
 | --- | --- | --- | --- |
 | First run | 0.814 | Not recorded | Copies of the same photo in more than one split |
 | Grouped split | 0.665 | 0.674 | Same photos shared across datasets (found later) |
-| Plaque removed (current) | 0.674 | 0.666 | Same photos shared across datasets (found later) |
-| Clean baseline | In progress | In progress | |
+| Plaque removed | 0.674 | 0.666 | Same photos shared across datasets (found later) |
+| Clean baseline (current) | 0.416 | 0.430 | A few near-copies might still be left |
 
 ## What I'd do differently
 
@@ -61,6 +66,14 @@ I'd compare photos by their content from day one. Both leaks came from the same 
 
 I'd also get expert-labeled data, especially for calculus. I thought about relabeling the test photos myself, but I don't have dental training, so my labels could just add new errors.
 
-Next, I want to build a live demo so the model can detect diseases in real time.
+Next, I'm adding more data, especially for gingivitis and tooth discoloration. I'll add one dataset at a time and check each one for duplicates against the validation and test sets first. Once the model is good enough, I want to build a live demo so it can detect diseases in real time.
 
 I also learned that training a model doesn't take weeks like I thought. A training run takes hours. Most of the time goes into reading papers, finding the right model and training methods, and solving data problems I didn't know existed.
+
+## Image credits
+
+The photos in the grid come from public Roboflow Universe datasets, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). I added the boxes and labels by running my model on them.
+
+- Ulcer and caries: ["calculus" (v1)](https://universe.roboflow.com/ashvikha/calculus-7eza2/dataset/1) by ashvikha
+- Calculus and tooth discoloration: ["Calculus" (v1)](https://universe.roboflow.com/dental-iex5i/calculus-tzg18/dataset/1) by dental-iex5i
+- Hypodontia: ["oral-diseases" (v2)](https://universe.roboflow.com/gilang-pappa-tanto-pambua-zplqr/oral-diseases-rmzuw/dataset/2) by gilang-pappa-tanto-pambua-zplqr
