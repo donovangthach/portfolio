@@ -17,6 +17,16 @@ Libra is a debate coach app my team of four built at QuackHacks 2.0. Two people 
 ![Three Libra app screens: the home screen with speaker names and a minutes-per-speaker setting, a turn analysis with one flagged fallacy and one fact check marked false, and a list of saved debates.](./libra/app-screens.jpg)
 *Libra at QuackHacks 2.0. Left to right: the home screen, the analysis after a turn, and the debate history.*
 
+<iframe
+  src="https://www.youtube-nocookie.com/embed/IwSIi-H4tg0"
+  title="Libra demo video"
+  loading="lazy"
+  allow="encrypted-media; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+  style="width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 0.75rem;"
+></iframe>
+
 ## My role
 
 I built the fallacy detector. I started with a scikit-learn classifier, but it made the model more complex than it needed to be, so I switched to fine-tuning an OpenAI model on the [LOGIC dataset](https://github.com/causalNLP/logical-fallacy), which is a set of sentences labeled by fallacy type. The detector sends the whole passage with every sentence numbered in one request, because whether a sentence is a fallacy often depends on the sentences around it. For each sentence, the model picks one of 13 fallacy types, like ad hominem or false dilemma, or "none," and gives a confidence score.
