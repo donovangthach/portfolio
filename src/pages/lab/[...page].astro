@@ -1,0 +1,72 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import TagList from "../../components/TagList.astro";
+import { getProjects } from "../../lib/projects";
+import css from "../../styles/global.css?raw";
+
+export function getStaticPaths() {
+  return import.meta.env.DEV ? [{ params: { page: undefined } }]: [];
+}
+
+const [sample] = await getProjects();
+
+const found = [...css.matchAll(/\[data-palette="([\w-]+)"\]/g)].map((m) => m[1]);
+const palettes = ["default", ...new Set(found)];
+
+const swatches = [
+  { name: "space-950", className: "bg-space-950" },
+  { name: "space-900", className: "bg-space-900" },
+  { name: "space-800", className: "bg-space-800" },
+  { name: "starlight", className: "bg-starlight" },
+  { name: "nebula", className: "bg-nebula" },
+  { name: "comet", className: "bg-comet" },
+];
+---
+
+<BaseLayout title="Design Lab | Donovan Thach">
+  <h1 class="text-4xl font-bold tracking-tight">Design Lab</h1>
+  <p class="mt-3 text-starlight/80">
+    Dev-only page for comparing design choices. It is not built into the live site.
+  </p>
+
+  {
+    palettes.map((palette) => (
+      <section
+        data-palette={palette}
+        class="mt-12 rounded-2xl border border-space-800 bg-space-950 p-6 text-starlight"
+      >
+        <h2 class="text-2xl font-semibold">Palette: {palette}</h2>
+
+        <ul class="mt-6 grid grid-cols-3 gap-3 sm:grid-cols-6">
+          {swatches.map((swatch) => (
+            <li>
+              <div class={`h-12 rounded-lg border border-space-800 ${swatch.className}`} />
+              <p class="mt-1 text-xs text-starlight/70">{swatch.name}</p>
+            </li>
+          ))}
+        </ul>
+
+        <div class="mt-6 flex flex-wrap items-center gap-3">
+          <a href="#" class="rounded-lg bg-comet px-4 py-2 text-sm font-semibold text-space-950">
+            Primary button
+          </a>
+          <a href="#" class="rounded-lg border border-space-800 px-4 py-2 text-sm font-semibold hover:border-comet">
+            Secondary button
+          </a>
+          <a href="#" class="text-sm text-comet hover:underline">Text link</a>
+        </div>
+
+        <div class="mt-6">
+          <TagList tags={["Python", "YOLO11", "Computer Vision"]} />
+        </div>
+
+        {sample && (
+          <div class="mt-6">
+            <ProjectCard project={sample} />
+          </div>
+        )}
+      </section>
+    ))
+  }
+</BaseLayout>
