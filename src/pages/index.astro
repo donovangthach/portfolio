@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
+import SectionHeading from "../components/SectionHeading.astro";
 import { Content as About } from "../content/about.md";
 import { getProjects } from "../lib/projects";
 
@@ -10,23 +11,46 @@ const secondary = projects.filter((project) => project.data.tier === "secondary"
 ---
 
 <BaseLayout title="Donovan Thach | Portfolio">
-  <section>
-    <h1 class="text-4xl sm:text-5xl font-bold tracking-tight">Hi, I'm Donovan.</h1>
-    <p class="mt-4 text-lg text-starlight/80">
+  <section class="pt-4 sm:pt-12">
+    <p
+      class="inline-flex items-center gap-2 rounded-full border border-space-800 bg-space-900/60 px-3 py-1 text-xs text-starlight/80"
+    >
+      <span class="size-2 rounded-full bg-emerald-400" aria-hidden="true"></span>
+      Open to spring/summer 2027 internships
+    </p>
+    <h1 class="mt-6 text-4xl font-bold tracking-tight sm:text-6xl">Hi, I'm Donovan.</h1>
+    <p class="mt-4 max-w-2xl text-lg text-pretty text-starlight/80">
       I build AI for healthcare and assistive tech, backed by systems programming.
     </p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a
+        href="#projects"
+        class="rounded-lg bg-comet px-5 py-2.5 text-sm font-semibold text-space-950 transition-colors hover:bg-starlight"
+      >
+        See my work
+      </a>
+      <a
+        href="/resume.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="rounded-lg border border-starlight/20 bg-space-900/60 px-5 py-2.5 text-sm font-semibold transition-colors hover:border-comet"
+      >
+        Resume<span aria-hidden="true" class="ml-1">&nearr;&#xFE0E;</span>
+        <span class="sr-only">(opens in a new tab)</span>
+      </a>
+    </div>
   </section>
 
-  <section id="projects" class="mt-20 scroll-mt-20">
-    <h2 class="text-2xl font-semibold">Featured Projects</h2>
-    <div class="mt-6 grid gap-6">
+  <section id="projects" class="mt-24 scroll-mt-28 sm:scroll-mt-20">
+    <SectionHeading eyebrow="Projects" title="Featured work" />
+    <div class="mt-8 grid gap-6">
       {featured.map((project) => <ProjectCard project={project} />)}
     </div>
 
     {
       secondary.length > 0 && (
         <>
-          <h2 class="mt-16 text-2xl font-semibold">More Projects</h2>
+          <h3 class="mt-16 text-xl font-semibold">More projects</h3>
           <div class="mt-6 grid gap-6 sm:grid-cols-2">
             {secondary.map((project) => <ProjectCard project={project} />)}
           </div>
@@ -35,9 +59,9 @@ const secondary = projects.filter((project) => project.data.tier === "secondary"
     }
   </section>
 
-  <section id="about" class="mt-20 scroll-mt-20">
-    <h2 class="text-2xl font-semibold">About</h2>
-    <div class="prose prose-invert mt-4 max-w-none">
+  <section id="about" class="mt-24 scroll-mt-28 sm:scroll-mt-20">
+    <SectionHeading eyebrow="About" title="A bit about me" />
+    <div class="prose prose-invert mt-6 max-w-none prose-a:text-comet">
       <About />
     </div>
   </section>
