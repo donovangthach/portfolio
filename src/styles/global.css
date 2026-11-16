@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@theme inline {
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-space-grotesk);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
 @theme {
   --color-space-950: #05101c;
   --color-space-900: #0b1c2c;
@@ -8,6 +14,14 @@
   --color-starlight: #fdf4ee;
   --color-nebula: #d77c60;
   --color-comet: #62c8df;
+}
+
+@layer base{
+  h1,
+  h2,
+  h3 {
+    @apply font-heading text-balance;
+  }
 }
 
 /* Lab palettes */
