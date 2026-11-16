@@ -9,3 +9,40 @@
   --color-nebula: #8b5cf6;
   --color-comet: #38bdf8;
 }
+
+/* Lab palettes */
+[data-palette="aurora"] {
+  --color-space-950: #030712;
+  --color-space-900: #0b1220;
+  --color-space-800: #1e293b;
+  --color-nebula: #c084fc;
+  --color-comet: #5eead4;
+}
+
+[data-palette="ember"] {
+  --color-space-950: #0c0a09;
+  --color-space-900: #1c1917;
+  --color-space-800: #292524;
+  --color-starlight: #fafaf9;
+  --color-nebula: #f97316;
+  --color-comet: #fbbf24;
+}
+
+/* Modeled after the Pillars of Creation. */
+[data-palette="pillars_webb"] {
+  --color-space-950: #090d17;
+  --color-space-900: #0f1628;
+  --color-space-800: #162039;
+  --color-starlight: #ebfeeb;
+  --color-nebula: #d29642;
+  --color-comet: #ecd789;
+}
+
+[data-palette="pillars_hub"] {
+  --color-space-950: #05101c;
+  --color-space-900: #0b1c2c;
+  --color-space-800: #192f46;
+  --color-starlight: #fdf4ee;
+  --color-nebula: #d77c60;
+  --color-comet: #62c8df;
+}
