@@ -10,13 +10,29 @@ const { project } = Astro.props;
 const { title, summary, tags, scope, status } = project.data;
 ---
 
-<article class="rounded-xl border border-space-800 bg-space-900/60 p-6 transition-colors hover:border-nebula">
+<article
+  class="group relative rounded-xl border border-space-800 bg-space-900/60 p-6 transition hover:border-nebula motion-safe:hover:-translate-y-0.5"
+>
   <h3 class="text-xl font-semibold">
-    <a href={`/projects/${project.id}/`} class="hover:text-comet">{title}</a>
+    <a
+      href={`/projects/${project.id}/`}
+      class="outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-comet"
+    >
+      {title}
+    </a>
   </h3>
   <p class="mt-2 text-starlight/80">{summary}</p>
-  {scope && <p class="mt-3 text-sm text-starlight/60">Scope: {scope}{status && ` · ${status}`}</p>}
-  <div class="mt-4 ">
+  {(scope || status) && (
+    <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+      {scope && <p class="text-starlight/60">Scope: {scope}</p>}
+      {status && <p class="font-mono text-xs uppercase tracking-wider text-nebula">{status}</p>}
+    </div>
+  )}
+  <div class="mt-4">
     <TagList tags={tags} />
   </div>
+  <p class="mt-5 text-sm font-medium text-comet" aria-hidden="true">
+    Read case study
+    <span class="ml-1 inline-block transition-transform motion-safe:group-hover:translate-x-1">&rarr;</span>
+  </p>
 </article>
