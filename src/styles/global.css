@@ -2,6 +2,16 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
+  --color-space-950: #05101c;
+  --color-space-900: #0b1c2c;
+  --color-space-800: #192f46;
+  --color-starlight: #fdf4ee;
+  --color-nebula: #d77c60;
+  --color-comet: #62c8df;
+}
+
+/* Lab palettes */
+[data-palette="classic"] {
   --color-space-950: #05060f;
   --color-space-900: #0b0d1f;
   --color-space-800: #1a1f3d;
@@ -10,7 +20,6 @@
   --color-comet: #38bdf8;
 }
 
-/* Lab palettes */
 [data-palette="aurora"] {
   --color-space-950: #030712;
   --color-space-900: #0b1220;
@@ -38,6 +47,7 @@
   --color-comet: #ecd789;
 }
 
+/* This is the one currently in use. */
 [data-palette="pillars_hub"] {
   --color-space-950: #05101c;
   --color-space-900: #0b1c2c;
