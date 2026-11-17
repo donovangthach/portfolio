@@ -4,6 +4,7 @@ summary: Workout tracker for planning your weeks, logging sets and reps, reviewi
 tier: secondary
 order: 14
 tags: [React, TypeScript, Express, MongoDB]
+scope: 4x4
 status: Course project
 ---
 

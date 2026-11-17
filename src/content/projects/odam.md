@@ -4,7 +4,7 @@ summary: YOLO11 detector for six oral diseases. I caught and fixed two separate 
 tier: featured
 order: 1
 tags: [Python, YOLO11, Computer Vision, HPC]
-# scope: 5x5
+scope: 5x5
 status: In progress
 repo: https://github.com/donovangthach/Oral-Disease-Analysis-Model
 ---
