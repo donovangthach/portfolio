@@ -1,7 +1,9 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
+import { satteri } from '@astrojs/markdown-satteri';
 
 import tailwindcss from '@tailwindcss/vite';
+import { externalLinks } from './src/hast/external-links';
 
 // https://astro.build/config
 export default defineConfig({
@@ -31,6 +33,11 @@ export default defineConfig({
       fallbacks: ["monospace"]
     }
   ],
+  markdown: {
+    processor: satteri({
+      hastPlugins: [externalLinks],
+    }),
+  },
   vite: {
     plugins: [tailwindcss()]
   }
