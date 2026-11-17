@@ -32,8 +32,15 @@ const { Content } = await render(project);
     </div>
     {
       repo && (
-        <a href={repo} class="mt-4 inline-block text-comet hover:underline">
+        <a
+          href={repo}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mt-4 inline-block text-comet hover:underline"
+        >
           View code on GitHub
+          <span aria-hidden="true" class="ml-0.5">&nearr;&#xFE0E;</span>
+          <span class="sr-only">(opens in a new tab)</span>
         </a>
       )
     }
