@@ -4,6 +4,7 @@ summary: A Unix shell, a multithreaded pipeline, an encrypted client/server syst
 tier: secondary
 order: 12
 tags: [C, x86-64 Assembly, Linux]
+scope: 3x3
 status: Coursework
 draft: true
 ---

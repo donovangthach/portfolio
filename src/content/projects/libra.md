@@ -4,6 +4,7 @@ summary: Fine-tuned OpenAI model that flags 13 types of logical fallacies senten
 tier: secondary
 order: 11
 tags: [Python, OpenAI API, Flask, FastAPI, NLP]
+scope: 3x3
 status: Hackathon project
 repo: https://github.com/donovangthach/Fallac-Machine
 ---

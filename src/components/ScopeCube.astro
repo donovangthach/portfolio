@@ -1,0 +1,78 @@
+---
+interface Props {
+  size: number;
+  px?: number;
+}
+
+const { size, px = 28 } = Astro.props;
+
+const stickers = Array.from({ length: size * size });
+const faces = ["top", "front", "right"];
+---
+
+<span class="scene" style={`--px: ${px}px; --n: ${size}`} aria-hidden="true">
+  <span class="cube">
+    {
+      faces.map((face) => (
+        <span class={`face ${face}`}>
+          {stickers.map(() => (
+            <span class="sticker" />
+          ))}
+        </span>
+      ))
+    }
+  </span>
+</span>
+
+<style>
+  .scene {
+    position: relative;
+    display: inline-block;
+    width: calc(var(--px) * 1.7);
+    height: calc(var(--px) * 1.7);
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+
+  .cube {
+    --cube: calc(var(--px) * 4);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--cube);
+    height: var(--cube);
+    transform-style: preserve-3d;
+    transform: translate(-50%, -50%) scale(0.25) rotateX(-35deg) rotateY(-45deg);
+  }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--n), 1fr);
+    gap: 4px;
+    padding: 4px;
+    border-radius: 12px;
+    background: var(--color-space-950);
+  }
+
+  .top {
+    --sticker: #e5e7eb;
+    transform: rotateX(90deg) translateZ(calc(var(--cube) / 2));
+  }
+
+  .front {
+    --sticker: #22c55e;
+    transform: translateZ(calc(var(--cube) / 2));
+  }
+
+  .right {
+    --sticker: #ef4444;
+    transform: rotateY(90deg) translateZ(calc(var(--cube) / 2));
+  }
+
+  .sticker {
+    border-radius: 4px;
+    background: var(--sticker);
+  }
+</style>

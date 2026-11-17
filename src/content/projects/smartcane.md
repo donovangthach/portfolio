@@ -4,8 +4,8 @@ summary: Smart cane that steers blind users away from obstacles using computer v
 tier: featured
 order: 2
 tags: [C++, Arduino, Raspberry Pi, Python, YOLOv8, MiDaS]
-# scope: 4x4
-status: Prototyped
+scope: 4x4
+status: Prototyped, Hackathon Project
 repo: https://github.com/donovangthach/NavigAid
 ---
 

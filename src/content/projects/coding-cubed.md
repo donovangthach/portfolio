@@ -4,6 +4,7 @@ summary: 3D block-building game in Godot that teaches variables, conditionals, a
 tier: secondary
 order: 13
 tags: [Godot 4, GDScript, GitHub Actions, itch.io]
+scope: 4x4
 status: Course project
 repo: https://github.com/Mooshem/Software-Fungineers
 ---
