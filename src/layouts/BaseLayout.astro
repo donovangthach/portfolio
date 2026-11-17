@@ -15,7 +15,7 @@ const {
 } = Astro.props;
 ---
 
-<html lang="en">
+<html lang="en" class="scheme-dark motion-safe:data-loaded:scroll-smooth">
   <head>
     <Font cssVariable="--font-inter" preload={[{ style: "normal" }]} />
     <Font cssVariable="--font-space-grotesk" />
@@ -27,7 +27,11 @@ const {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#05101c" />
     <title>{title}</title>
+    <script is:inline>
+      addEventListener("load", () => (document.documentElement.dataset.loaded = ""));
+    </script>
   </head>
   <body class="min-h-screen bg-space-950 text-starlight antialiased">
     <Starfield />
