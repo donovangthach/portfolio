@@ -17,10 +17,29 @@
 }
 
 @layer base{
+  :focus-visible {
+    outline: 2px solid var(--color-comet);
+    outline-offset: 3px;
+  }
+
   h1,
   h2,
   h3 {
     @apply font-heading text-balance;
+  }
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*) {
+    animation-duration: 0.4s;
+  }
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
 

@@ -1,9 +1,16 @@
 ---
+let seed = 2014;
+
+function random() {
+  seed = (seed * 16807) % 2147483647;
+  return seed / 2147483647;
+}
+
 function makeStars(count: number, spread: number) {
   const stars: string[] = [];
   for (let i = 0; i < count; i++) {
-    const x = Math.floor(Math.random() * spread);
-    const y = Math.floor(Math.random() * spread);
+    const x = Math.floor(random() * spread);
+    const y = Math.floor(random() * spread);
     stars.push(`${x}px ${y}px #fff`);
   }
 
@@ -21,6 +28,13 @@ const large = makeStars(40, SPREAD);
   <div class="layer medium" style={`box-shadow: ${medium}`}></div>
   <div class="layer large" style={`box-shadow: ${large}`}></div>
 </div>
+
+<script is:inline>
+  for (const layer of document.querySelectorAll(".starfield .layer")) {
+    const seconds = parseFloat(getComputedStyle(layer).animationDuration);
+    layer.style.animationDelay = `-${(Date.now() / 1000) % seconds}s`;
+  }
+</script>
 
 <style>
   .starfield {
