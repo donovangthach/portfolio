@@ -1,22 +1,81 @@
 ---
+import type { Stage } from "../lib/stages";
+
 interface Props {
   size: number;
   px?: number;
+  stage?: Stage;
+  seed?: string;
+  view?: "above" | "below";
 }
 
-const { size, px = 28 } = Astro.props;
+const { size, px = 28 , stage = "done", seed = "cube", view = "above" } = Astro.props;
 
-const stickers = Array.from({ length: size * size });
-const faces = ["top", "front", "right"];
+const colors = {
+  top: "#e5e7eb",
+  front: "#22c55e",
+  right: "#ef4444",
+  back: "#3b82f6",
+  left: "#f97316",
+  bottom: "#facc15",
+}
+type Face = keyof typeof colors;
+
+const allColors = Object.values(colors);
+const notBottom = allColors.filter((color) => color !== colors.bottom);
+const sideColors = [colors.front, colors.right, colors.back, colors.left];
+
+let state = 2014;
+for (const char of seed) {
+  state = (state * 31 + char.charCodeAt(0)) % 2147483647 || 1;
+}
+
+function random() {
+  state = (state * 16807) % 2147483647;
+  return state / 2147483647;
+}
+
+function pick(list: string[]) {
+  return list[Math.floor(random() * list.length)]
+}
+
+const last = size - 1;
+const middle = last / 2;
+
+function isSolved(face: Face, row: number, col: number) {
+  if (stage === "done") return true;
+  if (row === middle && col === middle) return true;
+  if (stage === "planned") return false;
+
+  const corner = (row === 0 || row === last) && (col === 0 || col === last);
+  if (face === "bottom") return stage !== "cross" || size === 2 || !corner;
+  if (face === "top") return stage === "oll";
+  if (stage === "cross") return row === last && (size === 2 || (col !== 0 && col !== last));
+  return row > 0;
+}
+
+function stickerColor(face: Face, row: number, col: number) {
+  if (isSolved(face, row, col)) return colors[face];
+  if (stage === "oll") return pick(sideColors);
+  if (stage === "f2l") return pick(notBottom);
+  return pick(allColors)
+}
+
+const faces = (Object.keys(colors) as Face[]).map((name) => ({
+  name,
+  stickers: Array.from({ length: size * size }, (_, i) => 
+    stickerColor(name, Math.floor(i / size), i% size),
+  ),
+}));
 ---
 
 <span class="scene" style={`--px: ${px}px; --n: ${size}`} aria-hidden="true">
-  <span class="cube">
+  <span class={`cube ${view}`}>
     {
       faces.map((face) => (
-        <span class={`face ${face}`}>
-          {stickers.map(() => (
-            <span class="sticker" />
+        <span class={`face ${face.name}`}>
+          {face.stickers.map((color) => (
+            <span class="sticker" style={`background-color: ${color}`} />
           ))}
         </span>
       ))
@@ -36,13 +95,18 @@ const faces = ["top", "front", "right"];
 
   .cube {
     --cube: calc(var(--px) * 4);
+    --tilt: -35deg;
     position: absolute;
     top: 50%;
     left: 50%;
     width: var(--cube);
     height: var(--cube);
     transform-style: preserve-3d;
-    transform: translate(-50%, -50%) scale(0.25) rotateX(-35deg) rotateY(-45deg);
+    transform: translate(-50%, -50%) scale(0.25) rotateX(var(--tilt)) rotateY(-45deg);
+  }
+
+  .below {
+    --tilt: 35deg;
   }
 
   .face {
@@ -57,22 +121,30 @@ const faces = ["top", "front", "right"];
   }
 
   .top {
-    --sticker: #e5e7eb;
     transform: rotateX(90deg) translateZ(calc(var(--cube) / 2));
   }
 
   .front {
-    --sticker: #22c55e;
     transform: translateZ(calc(var(--cube) / 2));
   }
 
   .right {
-    --sticker: #ef4444;
     transform: rotateY(90deg) translateZ(calc(var(--cube) / 2));
+  }
+
+  .back {
+    transform: rotateY(180deg) translateZ(calc(var(--cube) / 2));
+  }
+
+  .left {
+    transform: rotateY(-90deg) translateZ(calc(var(--cube) / 2));
+  }
+
+  .bottom {
+    transform: rotateX(-90deg) translateZ(calc(var(--cube) / 2));
   }
 
   .sticker {
     border-radius: 4px;
-    background: var(--sticker);
   }
 </style>

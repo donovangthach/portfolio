@@ -5,6 +5,7 @@ import TagList from "../../components/TagList.astro";
 import ScopeCube from "../../components/ScopeCube.astro";
 import { getProjects } from "../../lib/projects";
 import css from "../../styles/global.css?raw";
+import { stages } from "../../lib/stages";
 
 export function getStaticPaths() {
   return import.meta.env.DEV ? [{ params: { page: undefined } }]: [];
@@ -35,6 +36,17 @@ const swatches = [
     <h2 class="text-2xl font-semibold">Scope cubes</h2>
     <div class="mt-6 flex flex-wrap items-center gap-6">
       {[2, 3, 4, 5].map((size) => <ScopeCube size={size} px={72} />)}
+    </div>
+    <h3 class="mt-8 text-lg font-semibold">Stages, from above and below</h3>
+    <div class="mt-4 flex flex-wrap items-center gap-6">
+      {
+        stages.map(({ stage }) => (
+          <div class="flex">
+            <ScopeCube size={3} px={56} stage={stage} seed={stage} />
+            <ScopeCube size={3} px={56} stage={stage} seed={stage} view="below" />
+          </div>
+        ))
+      }
     </div>
   </section>
 
