@@ -8,12 +8,12 @@ export const colors = {
   left: "#f97316",
   bottom: "#facc15",
 };
-type Face = keyof typeof colors;
-const faceNames = Object.keys(colors) as Face[];
+export type Face = keyof typeof colors;
+export const faceNames = Object.keys(colors) as Face[];
 
 type Vec = [number, number, number];
 type Sticker = { spot: Vec; facing: Vec; color: string };
-type Cube = { size: number; stickers: Sticker[] };
+export type Cube = { size: number; stickers: Sticker[] };
 
 const facings: Record<Face, Vec> = {
   top: [0, 1, 0],
@@ -36,7 +36,7 @@ function spotOf(face: Face, row: number, col: number, size: number): Vec {
   return [across, -edge, up];
 }
 
-function solvedCube(size: number): Cube {
+export function solvedCube(size: number): Cube {
   const stickers: Sticker[] = [];
   for (const face of faceNames) {
     for (let row = 0; row < size; row++) {
@@ -75,25 +75,64 @@ const sides = {
   B: { axis: 2, sign: -1 },
 };
 
+export function readMove(move: string, size: number) {
+  const match = move.match(/^(\d?)([RLUDFB])(['2]?)$/);
+  if (!match) throw new Error(`Unknown move: ${move}`);
+  const [, depth, letter, amount] = match;
+  const { axis, sign } = sides[letter as keyof typeof sides];
+
+  const clockwise = sign === 1 ? 3 : 1;
+  const quarters = amount === "2" ? 2 : amount === "'" ? 4 - clockwise : clockwise;
+  const levels = [sign * (size + 1 - Number(depth || 1) * 2)];
+  return { axis, levels, quarters };
+}
+
 export function turn(cube: Cube, moves: string) {
   for (const move of moves.split(" ").filter(Boolean)) {
-    const match = move.match(/^(\d?)([RLUDFB])(['2]?)$/);
-    if (!match) throw new Error(`Unknown move: ${move}`);
-    const [, depth, letter, amount] = match;
-    const { axis, sign } = sides[letter as keyof typeof sides];
-
-    const clockwise = sign === 1 ? 3 : 1;
-    const quarters = amount === "2" ? 2 : amount === "'" ? 4 - clockwise : clockwise;
-    const level = sign * (cube.size + 1 - Number(depth || 1) * 2);
-
+    const { axis, levels, quarters } = readMove(move, cube.size);
     for (const sticker of cube.stickers) {
-      if (sticker.spot[axis] !== level) continue;
+      if (!levels.includes(sticker.spot[axis])) continue;
       for (let i = 0; i < quarters; i++) {
         sticker.spot = quarter(sticker.spot, axis);
         sticker.facing = quarter(sticker.facing, axis);
       }
     }
   }
+}
+
+const tilts: Record<Face, string> = {
+  top: "rotateX(90deg)",
+  front: "rotateY(0deg)",
+  right: "rotateY(90deg)",
+  back: "rotateY(180deg)",
+  left: "rotateY(-90deg)",
+  bottom: "rotateX(-90deg)",
+};
+
+const tileAxes: Record<Face, [Vec, Vec]> = {
+  top: [[1, 0, 0], [0, 0, 1]],
+  front: [[1, 0, 0], [0, -1, 0]],
+  right: [[0, 0, -1], [0, -1, 0]],
+  back: [[-1, 0, 0], [0, -1, 0]],
+  left: [[0, 0, 1], [0, -1, 0]],
+  bottom: [[1, 0, 0], [0, 0, -1]],
+};
+
+const dot = (a: Vec, b: Vec) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+
+export function place(sticker: Sticker, size: number) {
+  const face = faceNames.find((name) => String(facings[name]) === String(sticker.facing))!;
+  const [x, y, z] = sticker.spot;
+  const move = (n: number) => `calc(var(--cell) * ${n / 2})`;
+  const transform = `translate3d(${move(x)}, ${move(-y)}, ${move(z)}) ${tilts[face]} translateZ(calc(var(--cell) / 2))`;
+
+  const [right, down] = tileAxes[face];
+  const across = dot(sticker.spot, right);
+  const along = dot(sticker.spot, down);
+  const edge = size - 1;
+  const corner = Math.abs(across) === edge && Math.abs(along) === edge ? `${along > 0 ? "bottom" : "top"}-${across > 0 ? "right" : "left"}` : "";
+
+  return { face, transform, corner };
 }
 
 export function makeRandom(seed: string) {

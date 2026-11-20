@@ -1,6 +1,6 @@
 ---
 import type { Stage } from "../lib/stages";
-import { buildCube, makeRandom, readFaces, turn } from "../lib/cube";
+import { buildCube, faceNames, makeRandom, place, turn } from "../lib/cube";
 
 interface Props {
   size: number;
@@ -11,22 +11,20 @@ interface Props {
   moves?: string;
 }
 
-const { size, px = 28, stage = "done", seed = "cube", view = "above", moves = " " } = Astro.props;
+const { size, px = 28, stage = "done", seed = "cube", view = "above", moves = "" } = Astro.props;
 
 const cube = buildCube(size, stage, makeRandom(seed));
 turn(cube, moves);
-const faces = readFaces(cube);
+const tiles = cube.stickers.map((sticker) => ({ color: sticker.color, ...place(sticker, size) }));
 ---
 
-<span class="scene" style={`--px: ${px}px; --n: ${size}`} aria-hidden="true">
+<span class="scene" style={`--px: ${px}px; --n: ${size}`} data-size={size} aria-hidden="true">
   <span class={`cube ${view}`}>
-    {faces.map((face) => <span class={`core ${face.name}`} />)}
+    {faceNames.map((name) => <span class={`core ${name}`} />)}
     {
-      faces.map((face) => (
-        <span class={`face ${face.name}`}>
-          {face.stickers.map((color) => (
-            <span class="sticker" style={`background-color: ${color}`} />
-          ))}
+      tiles.map((tile) => (
+        <span class="tile" data-face={tile.face} data-corner={tile.corner} style={`transform: ${tile.transform}`}>
+          <span class="sticker" style={`background-color: ${tile.color}`} />
         </span>
       ))
     }
@@ -62,25 +60,75 @@ const faces = readFaces(cube);
     --tilt: 35deg;
   }
 
-  .face {
-    --depth: calc(var(--cube) / 2);
+  .tile {
     position: absolute;
-    inset: 0;
-    display: grid;
-    grid-template-columns: repeat(var(--n), 1fr);
-    gap: calc(var(--cell) * 0.08);
-    padding: calc(var(--cell) * 0.08);
-    border-radius: calc(var(--cell) * 0.4);
+    top: 50%;
+    left: 50%;
+    width: var(--cell);
+    height: var(--cell);
+    margin: calc(var(--cell) / -2);
+    padding: calc(var(--cell) * 0.04);
     background: var(--plastic);
     backface-visibility: hidden;
   }
 
-  .face::after {
+  .tile::after {
     content: "";
     position: absolute;
     inset: 0;
     border-radius: inherit;
     background: rgb(0 0 0 / var(--shade));
+  }
+
+  .sticker {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: calc(var(--cell) * 0.2);
+  }
+
+  .tile[data-face="top"] {
+    --shade: 0;
+  }
+
+  .tile[data-face="front"],
+  .tile[data-face="left"] {
+    --shade: 0.06;
+  }
+
+  .tile[data-face="right"],
+  .tile[data-face="back"] {
+    --shade: 0.18;
+  }
+
+  .tile[data-face="bottom"] {
+    --shade: 0.1;
+  }
+
+  .tile[data-corner="top-left"] {
+    border-top-left-radius: calc(var(--cell) * 0.4);
+  }
+
+  .tile[data-corner="top-right"] {
+    border-top-right-radius: calc(var(--cell) * 0.4);
+  }
+
+  .tile[data-corner="bottom-left"] {
+    border-bottom-left-radius: calc(var(--cell) * 0.4);
+  }
+
+  .tile[data-corner="bottom-right"] {
+    border-bottom-right-radius: calc(var(--cell) * 0.4);
+  }
+
+  .turning .core {
+    visibility: hidden;
+  }
+
+  .cube :global(.cap) {
+    position: absolute;
+    inset: var(--inset);
+    background: var(--plastic);
   }
 
   .core {
@@ -92,36 +140,26 @@ const faces = readFaces(cube);
   }
 
   .top {
-    --shade: 0;
     transform: rotateX(90deg) translateZ(var(--depth));
   }
 
   .front {
-    --shade: 0.06;
     transform: translateZ(var(--depth));
   }
 
   .right {
-    --shade: 0.18;
     transform: rotateY(90deg) translateZ(var(--depth));
   }
 
   .back {
-    --shade: 0.18;
     transform: rotateY(180deg) translateZ(var(--depth));
   }
 
   .left {
-    --shade: 0.06;
     transform: rotateY(-90deg) translateZ(var(--depth));
   }
 
   .bottom {
-    --shade: 0.1;
     transform: rotateX(-90deg) translateZ(var(--depth));
-  }
-
-  .sticker {
-    border-radius: calc(var(--cell) * 0.2);
   }
 </style>
