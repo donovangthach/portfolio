@@ -60,6 +60,20 @@ const swatches = [
         ))
       }
     </div>
+    <h3 class="mt-8 text-lg font-semibold">Turn it yourself</h3>
+    <div id="playground" class="mt-4 flex flex-wrap items-center gap-6">
+      <ScopeCube size={3} px={72} />
+      <div class="flex max-w-sm flex-wrap gap-2">
+        {
+          ["R", "R'", "U", "U'", "F", "F'", "L", "D", "B", "R2", "R U R' U'"].map((moves) => (
+            <button data-moves={moves} class="rounded-lg border border-space-800 px-3 py-1 font-mono text-sm hover:border-comet">
+              {moves}
+            </button>
+          ))
+        }
+        <button data-reset class="rounded-lg border border-space-800 px-3 py-1 text-sm hover:border-comet">Reset</button>
+      </div>
+    </div>
     <h3 class="mt-8 text-lg font-semibold">Stages, from above and below</h3>
     <div class="mt-4 flex flex-wrap items-center gap-6">
       {
@@ -113,3 +127,28 @@ const swatches = [
     ))
   }
 </BaseLayout>
+
+<script>
+  import { solvedCube } from "../../lib/cube";
+  import { animateTurn, show, tilesOf } from "../../lib/cube-player";
+
+  const playground = document.querySelector("#playground")!;
+  const tiles = tilesOf(playground);
+  let cube = solvedCube(3);
+  let queue = Promise.resolve();
+
+  for (const button of playground.querySelectorAll<HTMLButtonElement>("[data-moves]")) {
+    button.addEventListener("click", () => {
+      for (const move of button.dataset.moves!.split(" ")) {
+        queue = queue.then(() => animateTurn(tiles, cube, move, 300));
+      }
+    });
+  }
+
+  playground.querySelector("[data-reset]")!.addEventListener("click", () => {
+    queue = queue.then(() => {
+      cube = solvedCube(3);
+      show(tiles, cube);
+    });
+  });
+</script>
