@@ -99,7 +99,7 @@ export function turn(cube: Cube, moves: string) {
 export function makeRandom(seed: string) {
   let state = 2014;
   for (const char of seed) {
-    state = (state * 31 * char.charCodeAt(0)) % 2147483647 || 1;
+    state = (state * 31 + char.charCodeAt(0)) % 2147483647 || 1;
   }
   return () => {
     state = (state * 16807) % 2147483647;
@@ -121,10 +121,60 @@ export function randomMoves(count: number, random: Random, deepest = 1) {
   return moves.join(" ");
 }
 
+const sideTurns = ["R", "L", "F", "B"];
+const topTurns = ["U", "U'", "U2"];
+
+const lastLayerAlgs = [
+  "R U R' U R U2 R'",
+  "F R U R' U' F'",
+];
+
+const swapAlgs = [
+  "R U R' U' R' F R2 U' R' U' R U R' F'",
+  "R U' R U R U R U' R' U' R2",
+  "R U R' F' R U R' U' R' F R2 U' R' U'",
+];
+
+function topMixed(cube: Cube) {
+  const last = cube.size - 1;
+  const top = readFaces(cube).find(({ name }) => name === "top")!.stickers;
+  const noWhite = ([row, col]: number[]) => top[row * cube.size + col] !== colors.top;
+  const corners = [[0, 0], [0, last], [last, 0], [last, last]].filter(noWhite).length;
+  const edges = [[0, 1], [last, 1], [1, 0], [1, last]].filter(noWhite).length;
+  return corners >= 2 && edges >= 2;
+}
+
+function topRowsSolved(cube: Cube) {
+  return readFaces(cube).every(({ name, stickers }) => {
+    if (name === "bottom") return true;
+    const row = name === "top" ? stickers : stickers.slice(0, cube.size);
+    return row.every((color) => color === row[0]);
+  });
+}
+
 export function buildCube(size: number, stage: Stage, random: Random) {
   const cube = solvedCube(size);
+
   if (stage === "planned") {
     turn(cube, randomMoves(size * 15, random, Math.floor(size / 2)));
+  } else if (stage === "cross" && size > 2) {
+    for (let i = 0; i < 20; i++) {
+      const side = pick(sideTurns, random);
+      turn(cube, `${side} ${pick(topTurns, random)} ${side}'`);
+    }
+  } else if (stage === "cross" || stage === "f2l") {
+    while (!topMixed(cube)) {
+      for (let i = 0; i < 6; i++) {
+        turn(cube, `${pick(topTurns, random)} ${pick([...lastLayerAlgs, ...swapAlgs], random)}`);
+      }
+    }
+  } else if (stage === "oll") {
+    while (topRowsSolved(cube)) {
+      for (let i = 0; i < 3; i++) {
+        turn(cube, `${pick(topTurns, random)} ${pick(swapAlgs, random)}`);
+      }
+    }
   }
+
   return cube;
 }
