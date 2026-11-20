@@ -20,6 +20,7 @@ const faces = readFaces(cube);
 
 <span class="scene" style={`--px: ${px}px; --n: ${size}`} aria-hidden="true">
   <span class={`cube ${view}`}>
+    {faces.map((face) => <span class={`core ${face.name}`} />)}
     {
       faces.map((face) => (
         <span class={`face ${face.name}`}>
@@ -44,6 +45,9 @@ const faces = readFaces(cube);
 
   .cube {
     --cube: calc(var(--px) * 4);
+    --cell: calc(var(--cube) / var(--n));
+    --inset: calc(var(--cell) * 0.15);
+    --plastic: #111214;
     --tilt: -35deg;
     position: absolute;
     top: 50%;
@@ -59,41 +63,65 @@ const faces = readFaces(cube);
   }
 
   .face {
+    --depth: calc(var(--cube) / 2);
     position: absolute;
     inset: 0;
     display: grid;
     grid-template-columns: repeat(var(--n), 1fr);
-    gap: 4px;
-    padding: 4px;
-    border-radius: 12px;
-    background: var(--color-space-950);
+    gap: calc(var(--cell) * 0.08);
+    padding: calc(var(--cell) * 0.08);
+    border-radius: calc(var(--cell) * 0.4);
+    background: var(--plastic);
+    backface-visibility: hidden;
+  }
+
+  .face::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: rgb(0 0 0 / var(--shade));
+  }
+
+  .core {
+    --depth: calc(var(--cube) / 2 - var(--inset));
+    position: absolute;
+    inset: var(--inset);
+    background: var(--plastic);
+    backface-visibility: hidden;
   }
 
   .top {
-    transform: rotateX(90deg) translateZ(calc(var(--cube) / 2));
+    --shade: 0;
+    transform: rotateX(90deg) translateZ(var(--depth));
   }
 
   .front {
-    transform: translateZ(calc(var(--cube) / 2));
+    --shade: 0.06;
+    transform: translateZ(var(--depth));
   }
 
   .right {
-    transform: rotateY(90deg) translateZ(calc(var(--cube) / 2));
+    --shade: 0.18;
+    transform: rotateY(90deg) translateZ(var(--depth));
   }
 
   .back {
-    transform: rotateY(180deg) translateZ(calc(var(--cube) / 2));
+    --shade: 0.18;
+    transform: rotateY(180deg) translateZ(var(--depth));
   }
 
   .left {
-    transform: rotateY(-90deg) translateZ(calc(var(--cube) / 2));
+    --shade: 0.06;
+    transform: rotateY(-90deg) translateZ(var(--depth));
   }
 
   .bottom {
-    transform: rotateX(-90deg) translateZ(calc(var(--cube) / 2));
+    --shade: 0.1;
+    transform: rotateX(-90deg) translateZ(var(--depth));
   }
 
   .sticker {
-    border-radius: 4px;
+    border-radius: calc(var(--cell) * 0.2);
   }
 </style>
