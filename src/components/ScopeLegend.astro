@@ -1,20 +1,36 @@
 ---
 import ScopeCube from "./ScopeCube.astro";
+import { stages } from "../lib/stages";
 
 const sizes = [2, 3, 4, 5];
 ---
 
-<div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-starlight/70">
-  <p>Cube size shows project scope:</p>
-  <ul class="flex flex-wrap items-center gap-4">
-    {
-      sizes.map((size) => (
-        <li class="flex items-center gap-1">
-          <ScopeCube size={size} px={20} />
-          <span>{size}x{size}</span>
-        </li>
-      ))
-    }
-  </ul>
-  <p>(smallest to largest)</p>
+<div class="space-y-2 text-xs text-starlight/70">
+  <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
+    <p>Cube size shows project scope:</p>
+    <ul class="flex flex-wrap items-center gap-4">
+      {
+        sizes.map((size) => (
+          <li class="flex items-center gap-1">
+            <ScopeCube size={size} px={20} />
+            <span>{size}x{size}</span>
+          </li>
+        ))
+      }
+    </ul>
+    <p>(smallest to largest)</p>
+  </div>
+  <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
+    <p>How solved it is shows progress:</p>
+    <ul class="flex flex-wrap items-center gap-4">
+      {
+        stages.map(({ stage, label }) => (
+          <li class="flex items-center gap-1">
+            <ScopeCube size={3} px={20} stage={stage} seed={label} />
+            <span>{label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </div>

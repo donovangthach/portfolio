@@ -8,7 +8,7 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { title, summary, tags, scope, status } = project.data;
+const { title, summary, tags, scope, stage, status } = project.data;
 ---
 
 <article
@@ -28,7 +28,7 @@ const { title, summary, tags, scope, status } = project.data;
     <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
       {scope && (
         <p class="flex items-center gap-2 text-starlight/60">
-          <ScopeCube size={Number(scope[0])} />
+          <ScopeCube size={Number(scope[0])} stage={stage} seed={project.id} />
           Scope: {scope}
         </p>
       )}

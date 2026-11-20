@@ -5,7 +5,8 @@ tier: featured
 order: 1
 tags: [Python, YOLO11, Computer Vision, HPC]
 scope: 5x5
-status: In progress
+stage: f2l
+status: in progress, independent project
 repo: https://github.com/donovangthach/Oral-Disease-Analysis-Model
 ---
 

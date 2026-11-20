@@ -2,6 +2,8 @@
 import { render, type CollectionEntry } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import TagList from "../../components/TagList.astro";
+import ScopeCube from "../../components/ScopeCube.astro";
+import { stageLabel } from "../../lib/stages";
 import { getProjects } from "../../lib/projects";
 
 export async function getStaticPaths() {
@@ -17,7 +19,7 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { title, summary, tags, repo } = project.data;
+const { title, summary, tags, repo, scope, stage } = project.data;
 const { Content } = await render(project);
 ---
 
@@ -30,6 +32,18 @@ const { Content } = await render(project);
     <div class="mt-4">
       <TagList tags={tags} />
     </div>
+    {
+      scope && (
+        <div class="mt-4 flex items-center gap-3 text-sm text-starlight/60">
+          <ScopeCube size={Number(scope[0])} px={48} stage={stage} seed={project.id} />
+          <ScopeCube size={Number(scope[0])} px={48} stage={stage} seed={project.id} view="below" />
+          <p>
+            Scope: {scope}
+            {stage && <> &middot; {stageLabel(stage)}</>}
+          </p>
+        </div>
+      )
+    }
     {
       repo && (
         <a

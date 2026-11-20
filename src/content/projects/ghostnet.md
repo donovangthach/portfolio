@@ -5,6 +5,7 @@ tier: secondary
 order: 10
 tags: [Python, PyTorch, ESP32-S3, FastAPI, Snowflake, React]
 scope: 4x4
+stage: done
 status: Hackathon project
 repo: https://github.com/dalmartin/ghostnet
 ---

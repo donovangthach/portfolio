@@ -5,6 +5,7 @@ tier: secondary
 order: 13
 tags: [Godot 4, GDScript, GitHub Actions, itch.io]
 scope: 4x4
+stage: done
 status: Course project
 repo: https://github.com/Mooshem/Software-Fungineers
 ---

@@ -5,6 +5,7 @@ tier: secondary
 order: 11
 tags: [Python, OpenAI API, Flask, FastAPI, NLP]
 scope: 3x3
+stage: done
 status: Hackathon project
 repo: https://github.com/donovangthach/Fallac-Machine
 ---

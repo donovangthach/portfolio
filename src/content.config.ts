@@ -11,6 +11,7 @@ const projects = defineCollection({
     order: z.number(),
     tags: z.array(z.string()),
     scope: z.enum(["2x2", "3x3", "4x4", "5x5"]).optional(),
+    stage: z.enum(["planned", "cross", "f2l", "oll", "done"]).optional(),
     status: z.string().optional(),
     repo: z.url().optional(),
     draft: z.boolean().default(false),
