@@ -30,6 +30,7 @@ const {
     <meta name="theme-color" content="#05101c" />
     <title>{title}</title>
     <script is:inline>
+      document.documentElement.classList.add("js");
       addEventListener("load", () => (document.documentElement.dataset.loaded = ""));
     </script>
   </head>
