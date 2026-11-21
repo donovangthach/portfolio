@@ -18,7 +18,14 @@ turn(cube, moves);
 const tiles = cube.stickers.map((sticker) => ({ color: sticker.color, ...place(sticker, size) }));
 ---
 
-<span class="scene" style={`--px: ${px}px; --n: ${size}`} data-size={size} aria-hidden="true">
+<span
+  class="scene"
+  style={`--px: ${px}px; --n: ${size}`}
+  data-size={size}
+  data-stage={moves ? undefined : stage}
+  data-seed={seed}
+  aria-hidden="true"
+>
   <span class={`cube ${view}`}>
     {faceNames.map((name) => <span class={`core ${name}`} />)}
     {
@@ -162,4 +169,45 @@ const tiles = cube.stickers.map((sticker) => ({ color: sticker.color, ...place(s
   .bottom {
     transform: rotateX(-90deg) translateZ(var(--depth));
   }
+  
+  :global(.js) .scene[data-stage]:not([data-ready]) .cube {
+    animation: appear 0s 2s both;
+  }
+
+  @keyframes appear {
+    from {
+      visibility: hidden;
+    }
+    to {
+      visibility: visible;
+    }
+  }
 </style>
+
+<script>
+  import { buildCube, makeRandom } from "../lib/cube";
+  import { show, tilesOf, } from "../lib/cube-player";
+  import type { Stage } from "../lib/stages";
+
+  function visitSeed() {
+    try {
+      const saved = sessionStorage.getItem("cube-visit");
+      if (saved) return saved;
+      const fresh = String(Math.random());
+      sessionStorage.setItem("cube-visit", fresh);
+      return fresh;
+    } catch {
+      return String(Math.random());
+    }
+  }
+
+  const visit = visitSeed();
+
+  for (const scene of document.querySelectorAll<HTMLElement>(".scene[data-stage]")) {
+    const size = Number(scene.dataset.size);
+    const stage = scene.dataset.stage as Stage;
+    const cube = buildCube(size, stage, makeRandom(scene.dataset.seed + visit));
+    show(tilesOf(scene), cube);
+    scene.dataset.ready = "";
+  }
+</script>
